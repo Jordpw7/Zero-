@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>£0 Challenge</title>
+<style>
+:root{--bg:#0d0f13;--card:#171a21;--card2:#20242d;--text:#f4f5f7;--muted:#aeb4c0;--accent:#7cdb9b;--danger:#ff7373;--gold:#ffd76a;--line:#303641}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#0b0d10,#151922);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.app{max-width:720px;margin:auto;padding:18px 16px 36px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.brand{font-size:25px;font-weight:850}.pill{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 11px;font-size:13px;font-weight:750}
+.card{background:rgba(23,26,33,.96);border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0}.hero{text-align:center;padding:24px 18px}.eyebrow{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.09em}.spend{font-size:52px;font-weight:900;line-height:1;margin:9px 0 14px}.status{color:var(--muted);font-size:14px}.bar{height:11px;background:#0c0e12;border-radius:99px;overflow:hidden;border:1px solid var(--line)}.fill{height:100%;background:var(--accent);width:0%;transition:.25s}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:var(--card2);border-radius:15px;padding:14px}.label{font-size:12px;color:var(--muted)}.value{font-size:24px;font-weight:850;margin-top:4px}
+button{min-height:46px;border:1px solid var(--line);border-radius:13px;background:var(--card2);color:var(--text);font-size:15px;font-weight:800;padding:10px 14px}button.primary{background:var(--accent);color:#08110b;border-color:var(--accent)}button.gold{background:var(--gold);color:#211900;border-color:var(--gold)}button.danger{color:#ffdede;border-color:#6b3434}.buttons{display:flex;flex-wrap:wrap;gap:8px}.buttons button{flex:1 1 72px}
+h2{margin:0 0 5px;font-size:19px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.mission{font-weight:750;line-height:1.35}.small{font-size:13px;color:var(--muted);line-height:1.4}
+.levelrow{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:8px 0}.ach{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.badge{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--card2)}.locked{opacity:.38}.badge strong{display:block;font-size:14px;margin-top:5px}.toast{min-height:20px;text-align:center;color:var(--accent);font-weight:750;font-size:14px;margin:10px 0}.history{display:flex;gap:7px;overflow:auto;padding-bottom:2px}.day{min-width:58px;text-align:center}.dot{height:38px;width:38px;border-radius:50%;margin:4px auto;background:var(--card2);display:grid;place-items:center;font-weight:850;border:1px solid var(--line)}.dot.good{background:#1c3927;border-color:#356d4a}.dot.bad{background:#3a2020;border-color:#713737}
+@media(min-width:560px){.stats{grid-template-columns:repeat(4,1fr)}.ach{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<div class="top"><div class="brand">£0 CHALLENGE</div><div class="pill" id="levelPill">🪵 Beginner</div></div>
+
+<section class="card hero">
+<div class="eyebrow">TODAY'S SPEND</div>
+<div class="spend" id="spend">£0.00</div>
+<div class="bar"><div class="fill" id="spendFill"></div></div>
+<div class="status" id="status">Protect the £0.</div>
+<div class="buttons" style="margin-top:15px">
+<button class="primary" id="zeroBtn">🏆 Complete £0 Day</button>
+<button id="bossBtn">⚔️ Beat an Impulse</button>
+</div>
+</section>
+
+<section class="stats">
+<div class="stat"><div class="label">🔥 STREAK</div><div class="value" id="streak">0</div></div>
+<div class="stat"><div class="label">⭐ XP</div><div class="value" id="xp">0</div></div>
+<div class="stat"><div class="label">🏦 SAVED</div><div class="value" id="saved">£0</div></div>
+<div class="stat"><div class="label">⚔️ DEFEATED</div><div class="value" id="defeated">0</div></div>
+</section>
+
+<section class="card">
+<div class="row"><div><h2>🎯 Daily Mission</h2><div class="mission" id="mission"></div></div><span class="pill">+25 XP</span></div>
+<p class="small">Complete the mission for bonus XP. You don't need a perfect day to win.</p>
+<button class="primary" id="missionBtn" style="width:100%">✓ Mission Complete</button>
+</section>
+
+<section class="card">
+<h2>💸 Log Spending</h2><p class="small">Every pound logged honestly helps you see the pattern.</p>
+<div class="buttons">
+<button data-add="1">£1</button><button data-add="2">£2</button><button data-add="5">£5</button><button data-add="10">£10</button><button data-add="20">£20</button><button id="otherBtn">Other</button>
+</div>
+</section>
+
+<section class="card">
+<h2>⭐ Level Progress</h2>
+<div class="levelrow"><span id="levelName">Beginner</span><span id="levelProg">0 / 100 XP</span></div>
+<div class="bar"><div class="fill" id="levelFill"></div></div>
+<div class="small" id="next">100 XP to Saver</div>
+</section>
+
+<section class="card">
+<h2>📅 7-Day Run</h2><div class="history" id="history"></div>
+</section>
+
+<section class="card">
+<h2>🏆 Achievements</h2>
+<div class="ach" id="achievements"></div>
+</section>
+
+<div class="toast" id="toast"></div>
+<section class="card">
+<div class="row"><div><h2>⚙️ Controls</h2><div class="small">Your progress is saved in this browser on this device.</div></div><button class="danger" id="reset">Reset</button></div>
+</section>
+</div>
+
+<script>
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+<script>
+(function(){
+const KEY="zeroChallengeV1";
+const missions=["Complete a £0 day.","Avoid buying a drink outside today.","Defeat one impulse purchase.","Use something you already own instead of buying new.","Make one deliberate money-saving choice.","Bring food or a drink from home.","Have a no-spend evening."];
+const levels=[["Beginner",0,"🪵"],["Saver",100,"🥉"],["Money Player",250,"🥈"],["Money Machine",500,"🥇"],["Money Master",1000,"💎"],["£0 Legend",2000,"👑"]];
+let data=load();
+function today(){return new Date().toISOString().slice(0,10)}
+function load(){try{let x=JSON.parse(localStorage.getItem(KEY)||"");if(x)return x}catch(e){}return {xp:0,saved:0,streak:0,defeated:0,spend:0,date:today(),completed:false,missionDone:false,missionIndex:Math.floor(Math.random()*missions.length),days:[]}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function rollover(){if(data.date!==today()){if(!data.completed)data.streak=0;data.spend=0;data.completed=false;data.missionDone=false;data.date=today();data.missionIndex=Math.floor(Math.random()*missions.length);save()}}
+rollover();
+function money(n){return "£"+Number(n).toFixed(2)}
+function lvl(){let i=0;for(let j=0;j<levels.length;j++)if(data.xp>=levels[j][1])i=j;return i}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;clearTimeout(window.tt);window.tt=setTimeout(()=>e.textContent="",2800)}
+function render(){
+const i=lvl(),L=levels[i],N=levels[i+1];
+document.getElementById("spend").textContent=money(data.spend);
+document.getElementById("streak").textContent=data.streak+" day"+(data.streak===1?"":"s");
+document.getElementById("xp").textContent=data.xp;
+document.getElementById("saved").textContent=money(data.saved);
+document.getElementById("defeated").textContent=data.defeated;
+document.getElementById("levelPill").textContent=L[2]+" "+L[0];
+document.getElementById("mission").textContent=missions[data.missionIndex];
+document.getElementById("missionBtn").disabled=data.missionDone;
+document.getElementById("missionBtn").textContent=data.missionDone?"✓ Mission Complete":"+25 XP — Complete Mission";
+document.getElementById("spendFill").style.width=Math.min(100,data.spend/20*100)+"%";
+document.getElementById("status").textContent=data.spend===0?"Protect the £0.":data.spend<=5?"Still a strong day — keep control.":data.spend<=10?"⚠️ Spending boss approaching.":"💀 The spending boss is winning today.";
+if(N){const p=Math.max(0,Math.min(100,(data.xp-L[1])/(N[1]-L[1])*100));document.getElementById("levelFill").style.width=p+"%";document.getElementById("levelProg").textContent=(data.xp-L[1])+" / "+(N[1]-L[1])+" XP";document.getElementById("next").textContent=Math.max(0,N[1]-data.xp)+" XP to "+N[0]}else{document.getElementById("levelFill").style.width="100%";document.getElementById("levelProg").textContent="MAX";document.getElementById("next").textContent="👑 You are a £0 Legend."}
+let hist=data.days.slice(-7);while(hist.length<7)hist.unshift(null);
+document.getElementById("history").innerHTML=hist.map((d,k)=>{if(!d)return '<div class="day"><div class="small">—</div><div class="dot">?</div></div>';return '<div class="day"><div class="small">'+d.date.slice(5)+'</div><div class="dot '+(d.spend===0?"good":"bad")+'">'+(d.spend===0?"£0":"£"+Math.round(d.spend))+'</div></div>'}).join("");
+const A=[["🟢","First £0 Day",data.days.some(d=>d.spend===0)],["🔥","3-Day Streak",data.streak>=3],["🔥","7-Day Streak",data.streak>=7],["⚔️","Impulse Slayer",data.defeated>=1],["💰","£100 Saved",data.saved>=100],["👑","£0 Legend",data.xp>=2000]];
+document.getElementById("achievements").innerHTML=A.map(a=>'<div class="badge '+(a[2]?"":"locked")+'"><span>'+a[0]+'</span><strong>'+a[1]+'</strong><div class="small">'+(a[2]?"UNLOCKED":"LOCKED")+'</div></div>').join("");
+}
+function addSpend(n){data.spend+=n;data.xp=Math.max(0,data.xp-2);save();toast(money(n)+" logged. -2 XP");render()}
+document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addSpend(Number(b.dataset.add))));
+document.getElementById("otherBtn").addEventListener("click",()=>{let v=prompt("How much did you spend?");if(v===null)return;let n=Number(v);if(!Number.isFinite(n)||n<0){toast("Enter a valid amount.");return}addSpend(Math.min(n,100000))});
+document.getElementById("bossBtn").addEventListener("click",()=>{data.defeated++;data.xp+=25;data.saved+=5;save();toast("⚔️ IMPULSE DEFEATED! +25 XP");render()});
+document.getElementById("missionBtn").addEventListener("click",()=>{if(data.missionDone)return;data.missionDone=true;data.xp+=25;save();toast("🎯 Mission complete! +25 XP");render()});
+document.getElementById("zeroBtn").addEventListener("click",()=>{
+if(data.completed){toast("Today's run is already complete.");return}
+let reward,saveAmt;
+if(data.spend===0){data.streak++;reward=100;saveAmt=20;toast("🏆 PERFECT £0 DAY! +100 XP");}
+else if(data.spend<=5){data.streak++;reward=60;saveAmt=15;toast("🥈 STRONG DAY! +60 XP");}
+else{data.streak=0;reward=10;saveAmt=0;toast("Run complete. Tomorrow we attack £0.");}
+data.xp+=reward;data.saved+=saveAmt;data.completed=true;data.days.push({date:data.date,spend:data.spend});data.days=data.days.slice(-60);save();render();
+});
+document.getElementById("reset").addEventListener("click",()=>{if(confirm("Reset ALL game progress? This cannot be undone.")){localStorage.removeItem(KEY);location.reload()}});
+render();
+})();
+</script>
+</body></html>
